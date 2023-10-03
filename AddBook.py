@@ -6,7 +6,7 @@ from GlobalData import Datastorage
 from LinkedList import LinkedList,Book
 
 
-def BookUpdate(self):
+def BookUpdate():
     bid = bookInfo1.get()
     title = bookInfo2.get()
     author = bookInfo3.get()
@@ -17,15 +17,14 @@ def BookUpdate(self):
     myuser = storage.g_username
     mypass = storage.g_password
     mydatabase = storage.g_database
+    mybook = storage.g_book
     con = pymysql.connect(host=myhost, user=myuser, password=mypass, database=mydatabase)
     cur = con.cursor()
 
     try:
-        # Check if book already exists
-        cur.execute("SELECT * FROM books WHERE book = %s", temp.bid)
+        cur.execute("SELECT * FROM %s WHERE book = %s", (mybook,temp.bid))
         if cur.fetchone() is None:
-            # If not, insert new book
-            cur.execute("INSERT INTO books book VALUES %s", temp)
+            cur.execute("INSERT INTO %s book VALUES %s", (mybook,temp))
             messagebox.showinfo('Success', "Book added successfully")
             con.commit()
         else:
@@ -43,18 +42,6 @@ def addBook():
     root.title("Library")
     root.minsize(width=400,height=400)
     root.geometry("600x500")
-
-    storage = Datastorage()
-    myhost = storage.g_host
-    myuser = storage.g_username
-    mypass = storage.g_password
-    mydatabase = storage.g_database
-
-    con = pymysql.connect(host=myhost, user=myuser, password=mypass, database=mydatabase)
-    cur = con.cursor()
-
-    # Enter Table Names here
-    bookTable = storage.g_book # Book Table
     Canvas1 = Canvas(root)
 
     Canvas1.config(bg="#ff6e40")
@@ -67,6 +54,8 @@ def addBook():
 
     labelFrame = Frame(root, bg='black')
     labelFrame.place(relx=0.1,rely=0.4,relwidth=0.8,relheight=0.4)
+
+    global bookInfo1,bookInfo2,bookInfo3,bookInfo4
 
     # Book ID
     lb1 = Label(labelFrame,text="Book ID : ", bg='black', fg='white')
