@@ -2,43 +2,48 @@ from tkinter import *
 from PIL import ImageTk,Image
 from tkinter import messagebox
 import pymysql
-from BookNode import BookList
+from bookList import bookList
 
-# Add your own database name and password here to reflect in the code
-mypass = "root"
-mydatabase="db"
-
-con = pymysql.connect(host="localhost",user="root",password=mypass,database=mydatabase)
+mypass = "Mahehehe5ml" #use your own password
+mydatabase="db" #The database name
+con = pymysql.connect (host="localhost",user="LAPTOPCUI",password=mypass,database=mydatabase)
 cur = con.cursor()
-
 # Enter Table Names here
 issueTable = "books_issued" 
-bookTable = "books"
-book_list = BookList()
-
+bookTable = "books" #Book Table
 
 def deleteBook():
     
     bid = bookInfo1.get()
-    book_list.del_from_db(bid)
 
+    deleteSql = "delete from "+bookTable+" where bid = '"+bid+"'"
+    deleteIssue = "delete from "+issueTable+" where bid = '"+bid+"'"
+    try:
+        if bookList.searchBook(bid) >= 0:
+            cur.execute(deleteSql)
+            con.commit()
+            cur.execute(deleteIssue)
+            con.commit()
+            messagebox.showinfo('Success',"Book Record Deleted Successfully")
+            bookList.deleteBook(bid)
+        else:
+            messagebox.showinfo('Fail', 'Book ID not found')
+    except:
+        messagebox.showinfo("Please check Book ID")
+    
     print(bid)
-
     bookInfo1.delete(0, END)
     root.destroy()
-
-
-def delete(): 
     
+def delete():
+
     global bookInfo1,bookInfo2,bookInfo3,bookInfo4,Canvas1,con,cur,bookTable,root
     
     root = Tk()
     root.title("Library")
     root.minsize(width=400,height=400)
     root.geometry("600x500")
-    
     Canvas1 = Canvas(root)
-    
     Canvas1.config(bg="#006B38")
     Canvas1.pack(expand=True,fill=BOTH)
         
@@ -58,7 +63,7 @@ def delete():
     bookInfo1 = Entry(labelFrame)
     bookInfo1.place(relx=0.3,rely=0.5, relwidth=0.62)
     
-    # Submit Button
+    #Submit Button
     SubmitBtn = Button(root,text="SUBMIT",bg='#d1ccc0', fg='black',command=deleteBook)
     SubmitBtn.place(relx=0.28,rely=0.9, relwidth=0.18,relheight=0.08)
     

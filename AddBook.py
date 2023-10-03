@@ -1,20 +1,29 @@
 from tkinter import *
 from PIL import ImageTk,Image
 from tkinter import messagebox
-from BookNode import BookList, BookNode
 import pymysql
-
-book_list = BookList()
-
+from bookList import bookList
 
 def bookRegister():
+
     bid = bookInfo1.get()
     title = bookInfo2.get()
     author = bookInfo3.get()
     status = bookInfo4.get()
     status = status.lower()
 
-    book_list.add_book(bid,title,author,status)
+    insertBooks = "insert into "+bookTable+" values ('"+bid+"','"+title+"','"+author+"','"+status+"')"
+    try:
+        if bookList.searchBook(bid)<0:
+            cur.execute(insertBooks)
+            con.commit()
+            messagebox.showinfo('Success', "Book added successfully")
+            bookList.addBook(Book(bid,title,author,status))
+        else:
+            messagebox.showinfo('Fail', "Book not found")
+
+    except:
+        messagebox.showinfo("Error", "Can't add data into Database")
 
     print(bid)
     print(title)
@@ -22,25 +31,29 @@ def bookRegister():
     print(status)
     root.destroy()
 
+class Book():
+    def __init__(self,bid, title, author, status):
+        self.bid = bid
+        self.title = title
+        self.author = author
+        self.status = status
+        self.next = None
 
 def addBook():
-    global bookInfo1,bookInfo2,bookInfo3,bookInfo4,Canvas1,con,cur,bookTable,root
+    #mycode
+    global bookInfo1 ,bookInfo2, bookInfo3, bookInfo4, Canvas1, con, cur, bookTable, root, bookList
 
     root = Tk()
     root.title("Library")
     root.minsize(width=400,height=400)
     root.geometry("600x500")
-
-    # Add your own database name and password here to reflect in the code
-    mypass = "root"
-    mydatabase="db"
-
-    con = pymysql.connect(host="localhost",user="root",password=mypass,database=mydatabase)
+    mypass = "Mahehehe5ml"  # use your own password
+    mydatabase = "db"  # The database name
+    con = pymysql.connect(host="localhost", user="LAPTOPCUI", password=mypass, database=mydatabase)
     cur = con.cursor()
 
     # Enter Table Names here
     bookTable = "books" # Book Table
-
     Canvas1 = Canvas(root)
 
     Canvas1.config(bg="#ff6e40")
@@ -48,11 +61,10 @@ def addBook():
 
     headingFrame1 = Frame(root,bg="#FFBB00",bd=5)
     headingFrame1.place(relx=0.25,rely=0.1,relwidth=0.5,relheight=0.13)
-
     headingLabel = Label(headingFrame1, text="Add Books", bg='black', fg='white', font=('Courier',15))
     headingLabel.place(relx=0,rely=0, relwidth=1, relheight=1)
 
-    labelFrame = Frame(root,bg='black')
+    labelFrame = Frame(root, bg='black')
     labelFrame.place(relx=0.1,rely=0.4,relwidth=0.8,relheight=0.4)
 
     # Book ID
@@ -83,11 +95,11 @@ def addBook():
     bookInfo4 = Entry(labelFrame)
     bookInfo4.place(relx=0.3,rely=0.65, relwidth=0.62, relheight=0.08)
 
-    # Submit Button
+    #Submit Button
     SubmitBtn = Button(root,text="SUBMIT",bg='#d1ccc0', fg='black',command=bookRegister)
     SubmitBtn.place(relx=0.28,rely=0.9, relwidth=0.18,relheight=0.08)
 
-    quitBtn = Button(root,text="Quit",bg='#f7f1e3', fg='black', command=root.destroy)
+    quitBtn = Button(root,text="Quit",bg='#f7f1e3', fg='black',       command=root.destroy)
     quitBtn.place(relx=0.53,rely=0.9, relwidth=0.18,relheight=0.08)
 
     root.mainloop()
