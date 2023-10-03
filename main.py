@@ -45,8 +45,7 @@ if same:
 else:
     newImageSizeHeight = int(imageSizeHeight / n)
 
-# Nhet cai nay vao de thu cai git
-# Cai nay de test lan 2
+
 def resize_and_center_image(event):
     new_width = event.width
     new_height = event.height
