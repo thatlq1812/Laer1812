@@ -18,7 +18,6 @@ def BookUpdate():
     myuser = storage.g_username
     mypass = storage.g_password
     mydatabase = storage.g_database
-    mybook = storage.g_book
     con = pymysql.connect(host=myhost, user=myuser, password=mypass, database=mydatabase)
     cur = con.cursor()
 

@@ -2,7 +2,6 @@ from tkinter import *
 from PIL import ImageTk, Image
 import pymysql
 from tkinter import messagebox
-from BookNode import BookList, BookNode
 from GlobalData import Datastorage
 from AddBook import *
 from DeleteBook import *

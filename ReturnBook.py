@@ -2,26 +2,29 @@ from tkinter import *
 from PIL import ImageTk,Image
 from tkinter import messagebox
 import pymysql
-from BookNode import BookList
+from GlobalData import Datastorage
+from LinkedList import LinkedList
 
 # Add your own database name and password here to reflect in the code
-mypass = "root"
-mydatabase="db"
+storage = Datastorage()
+myhost = storage.g_host
+myuser = storage.g_username
+mypass = storage.g_password
+mydatabase = storage.g_database
+con = pymysql.connect(host=myhost, user=myuser, password=mypass, database=mydatabase)
 
-con = pymysql.connect(host="localhost",user="root",password=mypass,database=mydatabase)
-cur = con.cursor()
+issueTable = storage.g_issued
+bookTable = storage.g_book
 
-# Enter Table Names here
-issueTable = "books_issued" #Issue Table
-bookTable = "books" #Book Table
+book_list = LinkedList()
 
-book_list = BookList()
-
-allBid = [] #List To store all Book IDs
 
 def returnn():
     bid = bookInfo1.get()
-    book_list.book_return(bid)
+    if not bid:
+        messagebox.showwarning("Invalid Input", "Please enter the Book ID.")
+        return
+    book_list.return_book(bid)
     root.destroy()
 
 

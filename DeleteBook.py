@@ -39,7 +39,8 @@ def deleteBook():
     print(bid)
     bookInfo1.delete(0, END)
     root.destroy()
-    
+
+
 def delete():
 
     global bookInfo1,bookInfo2,bookInfo3,bookInfo4,Canvas1,con,cur,mybook,myissued,root

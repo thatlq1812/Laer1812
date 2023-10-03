@@ -18,4 +18,4 @@ con.commit()
 for i in cur:
     book = Book(i[0], i[1], i[2], i[3])
     bookList.addBook(book)
-bookList.traverse()
+# bookList.traverse()

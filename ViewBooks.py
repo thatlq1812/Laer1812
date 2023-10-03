@@ -2,16 +2,18 @@ from tkinter import *
 from PIL import ImageTk,Image
 from tkinter import messagebox
 import pymysql
+from LinkedList import LinkedList
+from GlobalData import Datastorage
 
 # Add your own database name and password here to reflect in the code
-mypass = "root"
-mydatabase="db"
-
-con = pymysql.connect(host="localhost",user="root",password=mypass,database=mydatabase)
+storage = Datastorage()
+myhost = storage.g_host
+myuser = storage.g_username
+mypass = storage.g_password
+mydatabase = storage.g_database
+mybook = storage.g_book
+con = pymysql.connect(host=myhost, user=myuser, password=mypass, database=mydatabase)
 cur = con.cursor()
-
-# Enter Table Names here
-bookTable = "books"
 
 
 def View():
@@ -37,12 +39,13 @@ def View():
 
     Label(labelFrame, text="%-10s%-60s%-30s%-20s"%('BID','Title','Author','Status'),bg='black',fg='white', anchor='w').place(relx=0.07,rely=0.1, relwidth=0.9)
     Label(labelFrame, text="----------------------------------------------------------------------------",bg='black',fg='white').place(relx=0.07,rely=0.2, relwidth=0.9)
-    getBooks = "select * from "+bookTable
+    getBooks = "select * from "+mybook
     try:
         cur.execute(getBooks)
+        book_list = LinkedList()
         con.commit()
         for i in cur:
-            Label(labelFrame, text="%-10s%-60s%-30s%-20s" %(i[0],str(i[1]+"_"),i[2],i[3]),bg='black',fg='white', anchor='w').place(relx=0.07,rely=y, relwidth=0.9)
+            Label(labelFrame, text="%-10s%-60s%-30s%-20s" %(i[0],i[1],i[2],i[3]),bg='black',fg='white', anchor='w').place(relx=0.07,rely=y, relwidth=0.9)
             y += 0.06
     except:
         messagebox.showinfo("Failed to fetch files from database")
