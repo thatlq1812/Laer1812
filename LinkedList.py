@@ -6,10 +6,8 @@ class Book():
         self.status = status
 
     def __str__(self):
-        print(f'Book id: {self.bid}')
-        print(f'Title: {self.title}')
-        print(f'Author: {self.author}')
-        print(f'Status: {self.status}')
+        print(f'{self.bid} - {self.title} - {self.author} - {self.status}')
+
 
 class Node:
     def __init__(self, value: Book):
