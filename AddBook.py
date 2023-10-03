@@ -2,58 +2,59 @@ from tkinter import *
 from PIL import ImageTk,Image
 from tkinter import messagebox
 import pymysql
-from bookList import bookList
+from GlobalData import Datastorage
+from LinkedList import LinkedList,Book
 
-def bookRegister():
 
+def BookUpdate(self):
     bid = bookInfo1.get()
     title = bookInfo2.get()
     author = bookInfo3.get()
     status = bookInfo4.get()
-    status = status.lower()
+    temp = Book(bid, title, author, status)
+    storage = Datastorage()
+    myhost = storage.g_host
+    myuser = storage.g_username
+    mypass = storage.g_password
+    mydatabase = storage.g_database
+    con = pymysql.connect(host=myhost, user=myuser, password=mypass, database=mydatabase)
+    cur = con.cursor()
 
-    insertBooks = "insert into "+bookTable+" values ('"+bid+"','"+title+"','"+author+"','"+status+"')"
     try:
-        if bookList.searchBook(bid)<0:
-            cur.execute(insertBooks)
-            con.commit()
+        # Check if book already exists
+        cur.execute("SELECT * FROM books WHERE book = %s", temp.bid)
+        if cur.fetchone() is None:
+            # If not, insert new book
+            cur.execute("INSERT INTO books book VALUES %s", temp)
             messagebox.showinfo('Success', "Book added successfully")
-            bookList.addBook(Book(bid,title,author,status))
+            con.commit()
         else:
-            messagebox.showinfo('Fail', "Book not found")
+            messagebox.showinfo(title="Failed", message="Book with ID {temp.bid} already exists in the database.")
+            con.rollback()
+    except pymysql.MySQLError as e:
+        messagebox.showinfo(f"Error: {str(e)}")
+        con.rollback()
+    finally:
+        con.close()
 
-    except:
-        messagebox.showinfo("Error", "Can't add data into Database")
-
-    print(bid)
-    print(title)
-    print(author)
-    print(status)
-    root.destroy()
-
-class Book():
-    def __init__(self,bid, title, author, status):
-        self.bid = bid
-        self.title = title
-        self.author = author
-        self.status = status
-        self.next = None
 
 def addBook():
-    #mycode
-    global bookInfo1 ,bookInfo2, bookInfo3, bookInfo4, Canvas1, con, cur, bookTable, root, bookList
-
     root = Tk()
     root.title("Library")
     root.minsize(width=400,height=400)
     root.geometry("600x500")
-    mypass = "Mahehehe5ml"  # use your own password
-    mydatabase = "db"  # The database name
-    con = pymysql.connect(host="localhost", user="LAPTOPCUI", password=mypass, database=mydatabase)
+
+    storage = Datastorage()
+    myhost = storage.g_host
+    myuser = storage.g_username
+    mypass = storage.g_password
+    mydatabase = storage.g_database
+
+    con = pymysql.connect(host=myhost, user=myuser, password=mypass, database=mydatabase)
     cur = con.cursor()
 
     # Enter Table Names here
-    bookTable = "books" # Book Table
+    bookTable = storage.g_book # Book Table
     Canvas1 = Canvas(root)
 
     Canvas1.config(bg="#ff6e40")
@@ -95,11 +96,11 @@ def addBook():
     bookInfo4 = Entry(labelFrame)
     bookInfo4.place(relx=0.3,rely=0.65, relwidth=0.62, relheight=0.08)
 
-    #Submit Button
-    SubmitBtn = Button(root,text="SUBMIT",bg='#d1ccc0', fg='black',command=bookRegister)
+    # Submit Button
+    SubmitBtn = Button(root,text="SUBMIT",bg='#d1ccc0', fg='black',command=BookUpdate)
     SubmitBtn.place(relx=0.28,rely=0.9, relwidth=0.18,relheight=0.08)
 
-    quitBtn = Button(root,text="Quit",bg='#f7f1e3', fg='black',       command=root.destroy)
+    quitBtn = Button(root,text="Quit",bg='#f7f1e3', fg='black',command=root.destroy)
     quitBtn.place(relx=0.53,rely=0.9, relwidth=0.18,relheight=0.08)
 
     root.mainloop()
