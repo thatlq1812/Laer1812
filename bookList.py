@@ -1,15 +1,17 @@
 from LinkedList import *
 import pymysql
+from GlobalData import Datastorage
 
-mypass = "Mahehehe5ml" #use your own password
-mydatabase="db" #The database name
+storage = Datastorage()
+myhost = storage.g_host
+myuser = storage.g_username
+mypass = storage.g_password
+mydatabase = storage.g_database
+mybook = storage.g_book
+con = pymysql.connect(host=myhost, user=myuser, password=mypass, database=mydatabase)
+cur = con.cursor()
 
-con = pymysql.connect (host="localhost",user="LAPTOPCUI",password=mypass,database=mydatabase)
-cur = con.cursor() #cur -> cursor
-
-bookTable = "books"
-
-getBooks = "select * from " + bookTable
+getBooks = "select * from " + mybook
 bookList = LinkedList()
 cur.execute(getBooks)
 con.commit()

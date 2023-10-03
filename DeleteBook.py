@@ -3,21 +3,26 @@ from PIL import ImageTk,Image
 from tkinter import messagebox
 import pymysql
 from bookList import bookList
+from GlobalData import Datastorage
 
-mypass = "Mahehehe5ml" #use your own password
-mydatabase="db" #The database name
-con = pymysql.connect (host="localhost",user="LAPTOPCUI",password=mypass,database=mydatabase)
+
+storage = Datastorage()
+myhost = storage.g_host
+myuser = storage.g_username
+mypass = storage.g_password
+mydatabase = storage.g_database
+mybook = storage.g_book
+myissued = storage.g_issued
+con = pymysql.connect(host=myhost, user=myuser, password=mypass, database=mydatabase)
 cur = con.cursor()
-# Enter Table Names here
-issueTable = "books_issued" 
-bookTable = "books" #Book Table
+
 
 def deleteBook():
     
     bid = bookInfo1.get()
 
-    deleteSql = "delete from "+bookTable+" where bid = '"+bid+"'"
-    deleteIssue = "delete from "+issueTable+" where bid = '"+bid+"'"
+    deleteSql = "delete from "+mybook+" where bid = '"+bid+"'"
+    deleteIssue = "delete from "+myissued+" where bid = '"+bid+"'"
     try:
         if bookList.searchBook(bid) >= 0:
             cur.execute(deleteSql)
@@ -37,7 +42,7 @@ def deleteBook():
     
 def delete():
 
-    global bookInfo1,bookInfo2,bookInfo3,bookInfo4,Canvas1,con,cur,bookTable,root
+    global bookInfo1,bookInfo2,bookInfo3,bookInfo4,Canvas1,con,cur,mybook,myissued,root
     
     root = Tk()
     root.title("Library")

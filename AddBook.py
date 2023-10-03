@@ -4,6 +4,7 @@ from tkinter import messagebox
 import pymysql
 from GlobalData import Datastorage
 from LinkedList import LinkedList,Book
+from bookList import bookList
 
 
 def BookUpdate():
@@ -22,9 +23,10 @@ def BookUpdate():
     cur = con.cursor()
 
     try:
-        cur.execute("SELECT * FROM %s WHERE book = %s", (mybook,temp.bid))
+        cur.execute("SELECT * FROM books WHERE bid = %s", temp.bid)
         if cur.fetchone() is None:
-            cur.execute("INSERT INTO %s book VALUES %s", (mybook,temp))
+            cur.execute("INSERT INTO books (bid, title, author, status) VALUES (%s, %s, %s, %s)",
+                        (temp.bid, temp.title, temp.author, temp.status))
             messagebox.showinfo('Success', "Book added successfully")
             con.commit()
         else:
@@ -33,11 +35,11 @@ def BookUpdate():
     except pymysql.MySQLError as e:
         messagebox.showinfo(f"Error: {str(e)}")
         con.rollback()
-    finally:
-        con.close()
+    root.destroy()
 
 
 def addBook():
+    global bookInfo1,bookInfo2,bookInfo3,bookInfo4,root
     root = Tk()
     root.title("Library")
     root.minsize(width=400,height=400)
@@ -54,8 +56,6 @@ def addBook():
 
     labelFrame = Frame(root, bg='black')
     labelFrame.place(relx=0.1,rely=0.4,relwidth=0.8,relheight=0.4)
-
-    global bookInfo1,bookInfo2,bookInfo3,bookInfo4
 
     # Book ID
     lb1 = Label(labelFrame,text="Book ID : ", bg='black', fg='white')
