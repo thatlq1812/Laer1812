@@ -3,27 +3,31 @@ from PIL import ImageTk, Image
 import pymysql
 from tkinter import messagebox
 from BookNode import BookList, BookNode
+from GlobalData import Datastorage
 from AddBook import *
 from DeleteBook import *
 from ViewBooks import *
 from IssueBook import *
 from ReturnBook import *
 
-# Add your own database name and password here to reflect in the code
-mypass = "root"
-mydatabase = "db"
-bgr = "Mor.jpg"
 
 button_color = "white"
 text_color = "black"
 buttonwidth = 0.45
 buttonheight = 0.1
-
 fontstyle = "SVN-Appleberry"
 fontsize = 13
 fonttype = "normal"
 
-con = pymysql.connect(host="localhost", user="root", password=mypass, database=mydatabase)
+# Add your own database name and password here to reflect in the code
+storage = Datastorage()
+myhost = storage.g_host
+myuser = storage.g_username
+mypass = storage.g_password  # use your own password
+mydatabase = storage.g_database  # The database name
+bgr = storage.g_backgroud
+
+con = pymysql.connect(host=myhost, user=myuser, password=mypass, database=mydatabase)
 cur = con.cursor()
 
 root = Tk()
