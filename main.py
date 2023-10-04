@@ -10,13 +10,6 @@ from ViewIssued import *
 from IssueBook import *
 from ReturnBook import *
 
-button_color = "white"
-text_color = "black"
-buttonwidth = 0.45
-buttonheight = 0.075
-fontstyle = "SVN-Appleberry"
-fontsize = 15
-fonttype = "normal"
 
 # Add your own database name and password here to reflect in the code
 storage = Datastorage()
@@ -28,6 +21,14 @@ bgr = storage.g_backgroud
 
 con = pymysql.connect(host=myhost, user=myuser, password=mypass, database=mydatabase)
 cur = con.cursor()
+
+button_color = "white"
+text_color = "black"
+buttonwidth = 0.45
+buttonheight = 0.075
+fontstyle = storage.g_font
+fontsize = 15
+fonttype = "normal"
 
 root = Tk()
 root.title("Library")
@@ -96,7 +97,7 @@ headingFrame1 = Frame(root, bg="#FFBB00", bd=5)
 headingFrame1.place(relx=0.2, rely=0.1, relwidth=0.6, relheight=0.15)
 
 headingLabel = Label(headingFrame1, text="Welcome to \n DataFlair Library", bg=button_color, fg=text_color,
-                     font=('SVN-Nexa Rust Sans Black', 13))
+                     font=(fontstyle, 20))
 headingLabel.place(relx=0, rely=0, relwidth=1, relheight=1)
 
 btn1 = Button(root, text="Add Book Details", font=(fontstyle, fontsize, fonttype), bg=button_color, fg="green",

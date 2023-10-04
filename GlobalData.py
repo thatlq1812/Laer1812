@@ -7,4 +7,5 @@ class Datastorage:
         self.g_book = "books"
         self.g_issued = "books_issued"
         self.g_backgroud = "BGPicture.jpg"
+        self.g_font = "SVN-Appleberry"
 
