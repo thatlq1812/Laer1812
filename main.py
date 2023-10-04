@@ -13,7 +13,7 @@ from ReturnBook import *
 button_color = "white"
 text_color = "black"
 buttonwidth = 0.45
-buttonheight = 0.1
+buttonheight = 0.075
 fontstyle = "SVN-Appleberry"
 fontsize = 13
 fonttype = "normal"
@@ -31,8 +31,8 @@ cur = con.cursor()
 
 root = Tk()
 root.title("Library")
-root.minsize(width=700, height=500)
-root.geometry("600x500")
+root.minsize(width=800, height=700)
+root.geometry("800x700")
 
 # Take n greater than 0.25 and less than 5
 same = True
@@ -78,7 +78,7 @@ image_on_canvas = Canvas1.create_image(0, 0, image=img, anchor="nw")
 Canvas1.bind("<Configure>", resize_and_center_image)
 Canvas1.config(bg="white")
 Canvas1.pack(expand=True, fill=BOTH)
-background_image = background_image.resize((800,600), Image.LANCZOS)
+background_image = background_image.resize((800,700), Image.LANCZOS)
 img = ImageTk.PhotoImage(background_image)
 
 headingFrame1 = Frame(root, bg="#FFBB00", bd=5)

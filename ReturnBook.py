@@ -5,32 +5,48 @@ import pymysql
 from GlobalData import Datastorage
 from LinkedList import LinkedList
 
-# Add your own database name and password here to reflect in the code
-storage = Datastorage()
-myhost = storage.g_host
-myuser = storage.g_username
-mypass = storage.g_password
-mydatabase = storage.g_database
-con = pymysql.connect(host=myhost, user=myuser, password=mypass, database=mydatabase)
-
-issueTable = storage.g_issued
-bookTable = storage.g_book
 
 book_list = LinkedList()
 
 
-def returnn():
+def return_book():
     bid = bookInfo1.get()
     if not bid:
-        messagebox.showwarning("Invalid Input", "Please enter the Book ID.")
+        messagebox.showwarning("Invalid Input", "Please ensure the Book ID field is filled.")
         return
-    book_list.return_book(bid)
+    storage = Datastorage()
+    myhost = storage.g_host
+    myuser = storage.g_username
+    mypass = storage.g_password
+    mydatabase = storage.g_database
+    con = pymysql.connect(host=myhost, user=myuser, password=mypass, database=mydatabase)
+    cur = con.cursor()
+
+    try:
+        cur.execute("SELECT status FROM books WHERE bid = %s", (bid,))
+        result = cur.fetchone()
+        if result is None:
+            messagebox.showinfo("Failed",message= "No book found with ID {}".format(bid))
+            con.rollback()
+        elif result[0] == 'avail':
+            messagebox.showinfo("Failed",message="Book with ID {} is not issued".format(bid))
+            con.rollback()
+        else:
+            cur.execute("UPDATE books SET status = 'avail' WHERE bid = %s", (bid,))
+            cur.execute("DELETE FROM books_issued WHERE bid = %s", (bid,))
+            messagebox.showinfo('Success', "Book returned successfully")
+            con.commit()
+    except pymysql.MySQLError as e:
+        messagebox.showinfo("Error", f"An error occurred: {str(e)}")
+        con.rollback()
+    finally:
+        con.close()
     root.destroy()
 
 
 def returnBook(): 
     
-    global bookInfo1,SubmitBtn,quitBtn,Canvas1,con,cur,root,labelFrame, lb1
+    global bookInfo1,SubmitBtn,quitBtn,Canvas1,con,cur,root,labelFrame,lb1
     
     root = Tk()
     root.title("Library")
@@ -59,7 +75,7 @@ def returnBook():
     bookInfo1.place(relx=0.3,rely=0.5, relwidth=0.62)
     
     # Submit Button
-    SubmitBtn = Button(root,text="Return",bg='#d1ccc0', fg='black',command=returnn)
+    SubmitBtn = Button(root,text="Return",bg='#d1ccc0', fg='black',command=return_book)
     SubmitBtn.place(relx=0.28,rely=0.9, relwidth=0.18,relheight=0.08)
     
     quitBtn = Button(root,text="Quit",bg='#f7f1e3', fg='black', command=root.destroy)

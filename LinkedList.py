@@ -29,12 +29,6 @@ class LinkedList:
     def __init__(self):
         self.head = None
         storage = Datastorage()
-        self.con = pymysql.connect(
-            host=storage.g_host,
-            user=storage.g_username,
-            password=storage.g_password,
-        )
-        self.load_issued_books_from_db()
 
     def isEmpty(self):
         if self.head:
@@ -110,47 +104,6 @@ class LinkedList:
             temp.value.__str__()
             temp = temp.next
 
-    def load_issued_books_from_db(self):
-        try:
-            con = pymysql.connect(host=self.con.host, user=self.con.user, password=self.con.password,database="db")
-            cur = con.cursor()
-            cur.execute("SELECT * FROM books_issued")
-            for row in cur.fetchall():
-                bid, issuedto = row
-                temp = self.head
-                while temp:
-                    if temp.value.bid == bid:
-                        temp.value.status = 'issued'
-                        break
-                    temp = temp.next
-            con.close()
-        except pymysql.MySQLError as e:
-            messagebox.showinfo('Error', f"An error occurred while loading issued books: {str(e)}")
-
-    def issue_book(self, bid, issuedto):
-        temp = self.head
-        while temp:
-            if temp.value.bid == bid and temp.value.status == 'avail':
-                temp.value.status = 'issued'
-
-                try:
-                    con = pymysql.connect(host=self.con.host, user=self.con.user, password=self.con.password, database="db")
-                    cur = con.cursor()
-                    cur = con.cursor()
-                    cur.execute("UPDATE books SET status ='issued' WHERE bid = %s", bid)
-                    cur.execute("INSERT INTO books_issued (bid, issuedto) VALUES (%s, %s)", (bid, issuedto))
-                    con.commit()
-                    con.close()
-                    messagebox.showinfo('Success', "Book issued successfully")
-                    return True
-                except pymysql.MySQLError as e:
-                    messagebox.showinfo('Error', f"An error occurred: {str(e)}")
-                    con.rollback()
-                    con.close()
-                    return False
-            temp = temp.next
-        messagebox.showinfo('Error', "Book not found or not available")
-        return False
 
     def return_book(self, bid):
         temp = self.head

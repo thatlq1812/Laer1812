@@ -5,27 +5,45 @@ import pymysql
 from LinkedList import LinkedList
 from GlobalData import Datastorage
 
-# Add your own database name and password here to reflect in the code
-storage = Datastorage()
-myhost = storage.g_host
-myuser = storage.g_username
-mypass = storage.g_password
-mydatabase = storage.g_database
-con = pymysql.connect(host=myhost, user=myuser, password=mypass, database=mydatabase)
 
 book_list = LinkedList()
 
 
 def issue():
     bid = inf1.get()
-    issueto = inf2.get()
-    if not bid or not issueto:
+    issued_to = inf2.get()
+
+    if not bid or not issued_to:
         messagebox.showwarning("Invalid Input", "Please ensure all fields are filled.")
         return
-    book_list.load_issued_books_from_db()
-    book_list.issue_book(bid, issueto)
-    print(bid)
-    print(issueto)
+
+    storage = Datastorage()
+    myhost = storage.g_host
+    myuser = storage.g_username
+    mypass = storage.g_password
+    mydatabase = storage.g_database
+    con = pymysql.connect(host=myhost, user=myuser, password=mypass, database=mydatabase)
+    cur = con.cursor()
+
+    try:
+        cur.execute("SELECT status FROM books WHERE bid = %s", (bid,))
+        result = cur.fetchone()
+        if result is None:
+            messagebox.showinfo("Failed", "No book found with ID {}".format(bid))
+            con.rollback()
+        elif result[0] == 'issued':
+            messagebox.showinfo("Failed", "Book with ID {} is already issued".format(bid))
+            con.rollback()
+        else:
+            cur.execute("UPDATE books SET status = 'issued' WHERE bid = %s", (bid,))
+            cur.execute("INSERT INTO books_issued (bid, issuedto) VALUES (%s, %s)", (bid, issued_to))
+            messagebox.showinfo('Success', "Book issued successfully")
+            con.commit()
+    except pymysql.MySQLError as e:
+        messagebox.showinfo("Error", f"An error occurred: {str(e)}")
+        con.rollback()
+    finally:
+        con.close()
     root.destroy()
 
 
