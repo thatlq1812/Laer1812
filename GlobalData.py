@@ -6,5 +6,5 @@ class Datastorage:
         self.g_database = "db"
         self.g_book = "books"
         self.g_issued = "books_issued"
-        self.g_backgroud = "Mor.jpg"
+        self.g_backgroud = "BGPicture.jpg"
 

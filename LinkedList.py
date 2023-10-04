@@ -88,51 +88,11 @@ class LinkedList:
                     temp = temp.next
                 return None
 
-    def append(self, data):
-        new_node = Node(data)
-        if not self.head:
-            self.head = new_node
-            return
-        last_node = self.head
-        while last_node.next:
-            last_node = last_node.next
-        last_node.next = new_node
-
     def traverse(self):
         temp = self.head
         while temp:
             temp.value.__str__()
             temp = temp.next
-
-
-    def return_book(self, bid):
-        temp = self.head
-        while temp:
-            if temp.value.bid == bid and temp.value.status == 'issued':
-                temp.value.status = 'avail'
-
-                try:
-                    storage = Datastorage()
-                    myhost = storage.g_host
-                    myuser = storage.g_username
-                    mypass = storage.g_password
-                    mydatabase = storage.g_database
-                    con = pymysql.connect(host=myhost, user=myuser, password=mypass, database=mydatabase)
-                    cur = con.cursor()
-                    cur.execute("UPDATE books SET status ='avail' WHERE bid = %s", bid)
-                    cur.execute("DELETE FROM books_issued WHERE bid = %s", bid)
-                    con.commit()
-                    con.close()
-                    messagebox.showinfo('Success', "Book returned successfully")
-                    return True
-                except pymysql.MySQLError as e:
-                    messagebox.showinfo('Error', f"An error occurred: {str(e)}")
-                    con.rollback()
-                    con.close()
-                    return False
-            temp = temp.next
-        messagebox.showinfo('Error', "Book not found or not issued")
-        return False
 
 
 book1 = Book(3, 'haha', 'ngoc chau', 'avail')
