@@ -99,27 +99,27 @@ headingLabel = Label(headingFrame1, text="Welcome to \n DataFlair Library", bg=b
                      font=('SVN-Nexa Rust Sans Black', 13))
 headingLabel.place(relx=0, rely=0, relwidth=1, relheight=1)
 
-btn1 = Button(root, text="Add Book Details", font=(fontstyle, fontsize, fonttype), bg=button_color, fg=text_color,
+btn1 = Button(root, text="Add Book Details", font=(fontstyle, fontsize, fonttype), bg=button_color, fg="green",
               command=addBook)
 btn1.place(relx=0.28, rely=0.4, relwidth=buttonwidth, relheight=buttonheight)
 
-btn2 = Button(root, text="Delete Book", font=(fontstyle, fontsize, fonttype), bg=button_color, fg=text_color,
+btn2 = Button(root, text="Delete Book", font=(fontstyle, fontsize, fonttype), bg=button_color, fg="red",
               command=delete)
 btn2.place(relx=0.28, rely=0.475, relwidth=buttonwidth, relheight=buttonheight)
 
-btn3 = Button(root, text="View Book List", font=(fontstyle, fontsize, fonttype), bg=button_color, fg=text_color,
+btn3 = Button(root, text="View Book List", font=(fontstyle, fontsize, fonttype), bg=button_color, fg="orange",
               command=ViewBook)
 btn3.place(relx=0.28, rely=0.55, relwidth=buttonwidth, relheight=buttonheight)
 
-btn3_2 = Button(root, text="View Issued List", font=(fontstyle, fontsize, fonttype), bg=button_color, fg=text_color,
+btn3_2 = Button(root, text="View Issued List", font=(fontstyle, fontsize, fonttype), bg=button_color, fg="orange",
                 command=ViewIssued)
 btn3_2.place(relx=0.28, rely=0.625, relwidth=buttonwidth, relheight=buttonheight)
 
-btn4 = Button(root, text="Issue Book to Student", font=(fontstyle, fontsize, fonttype), bg=button_color, fg=text_color,
+btn4 = Button(root, text="Issue Book to Student", font=(fontstyle, fontsize, fonttype), bg=button_color, fg="teal",
               command=issueBook)
 btn4.place(relx=0.28, rely=0.7, relwidth=buttonwidth, relheight=buttonheight)
 
-btn5 = Button(root, text="Return Book", font=(fontstyle, fontsize, fonttype), bg=button_color, fg=text_color,
+btn5 = Button(root, text="Return Book", font=(fontstyle, fontsize, fonttype), bg=button_color, fg="navy",
               command=returnBook)
 btn5.place(relx=0.28, rely=0.775, relwidth=buttonwidth, relheight=buttonheight)
 
